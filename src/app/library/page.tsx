@@ -259,13 +259,14 @@ function ExerciseModal({ exercise, onClose, onSave }: ExerciseModalProps) {
                                     type="button"
                                     onClick={() => toggleMetric(key)}
                                     className={`
-                    px-4 py-3 rounded-lg border text-sm font-medium
-                    transition-colors capitalize
-                    ${metrics[key]
-                                            ? 'bg-primary/20 border-primary text-primary'
+                                        px-4 py-3 rounded-lg border text-sm font-medium
+                                        transition-colors capitalize
+                                        ${metrics[key]
+                                            ? 'border-primary text-primary'
                                             : 'bg-muted border-border text-muted-foreground'
                                         }
-                  `}
+                                    `}
+                                    style={metrics[key] ? { backgroundColor: 'rgba(254, 128, 25, 0.2)' } : undefined}
                                 >
                                     {key}
                                 </button>
@@ -277,17 +278,17 @@ function ExerciseModal({ exercise, onClose, onSave }: ExerciseModalProps) {
                         <button
                             type="button"
                             onClick={onClose}
-                            className="flex-1 py-3 px-4 rounded-lg border border-border
-                       font-medium hover:bg-muted transition-colors"
+                            className="flex-1 py-3 px-4 rounded-lg font-medium transition-colors"
+                            style={{ backgroundColor: '#fb4934', color: '#1d2021' }}
                         >
                             Cancel
                         </button>
                         <button
                             type="submit"
                             disabled={isSaving || !name.trim()}
-                            className="flex-1 py-3 px-4 rounded-lg bg-primary text-background
-                       font-semibold hover:bg-primary-dim transition-colors
-                       disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="flex-1 py-3 px-4 rounded-lg font-semibold transition-colors
+                                disabled:opacity-50 disabled:cursor-not-allowed"
+                            style={{ backgroundColor: '#b8bb26', color: '#1d2021' }}
                         >
                             {isSaving ? 'Saving...' : 'Save'}
                         </button>

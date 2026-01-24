@@ -198,9 +198,9 @@ export default function TodaysWorkoutPage() {
       {/* FAB to add exercise */}
       <button
         onClick={() => setShowAddModal(true)}
-        className="fixed bottom-6 right-6 p-4 rounded-full bg-primary text-background
-                 shadow-lg hover:bg-primary-dim transition-colors
+        className="fixed bottom-6 right-6 p-4 rounded-full shadow-lg transition-colors
                  active:scale-95 transition-transform z-30"
+        style={{ backgroundColor: '#fe8019', color: '#1d2021' }}
         aria-label="Add exercise"
       >
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

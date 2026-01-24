@@ -351,9 +351,9 @@ export default function ExercisePage({ params }: PageProps) {
             {/* Stopwatch FAB */}
             <button
                 onClick={() => setShowStopwatch(true)}
-                className="fixed bottom-6 right-6 p-4 rounded-full bg-bg2 text-foreground
-                 shadow-lg hover:bg-bg3 transition-colors
+                className="fixed bottom-6 right-6 p-4 rounded-full shadow-lg transition-colors
                  active:scale-95 transition-transform z-30"
+                style={{ backgroundColor: '#83a598', color: '#1d2021' }}
                 aria-label="Open stopwatch"
             >
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -478,19 +478,14 @@ interface StopwatchModalProps {
 
 function StopwatchModal({ onClose }: StopwatchModalProps) {
     const [seconds, setSeconds] = useState(0)
-    const [isRunning, setIsRunning] = useState(false)
 
+    // Auto-start the timer when modal opens
     useEffect(() => {
-        let interval: NodeJS.Timeout | null = null
-        if (isRunning) {
-            interval = setInterval(() => {
-                setSeconds(s => s + 1)
-            }, 1000)
-        }
-        return () => {
-            if (interval) clearInterval(interval)
-        }
-    }, [isRunning])
+        const interval = setInterval(() => {
+            setSeconds(s => s + 1)
+        }, 1000)
+        return () => clearInterval(interval)
+    }, [])
 
     const formatTime = (totalSeconds: number) => {
         const mins = Math.floor(totalSeconds / 60)
@@ -498,51 +493,23 @@ function StopwatchModal({ onClose }: StopwatchModalProps) {
         return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
     }
 
-    const handleReset = () => {
-        setIsRunning(false)
-        setSeconds(0)
-    }
-
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div className="absolute inset-0 bg-black/50" onClick={onClose} />
             <div className="relative bg-card rounded-xl p-6 w-full max-w-xs border border-border shadow-xl text-center">
-                <button
-                    onClick={onClose}
-                    className="absolute top-4 right-4 p-1"
-                    aria-label="Close stopwatch"
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <line x1="18" y1="6" x2="6" y2="18" />
-                        <line x1="6" y1="6" x2="18" y2="18" />
-                    </svg>
-                </button>
-
                 <h2 className="text-lg font-semibold mb-4">Rest Timer</h2>
 
                 <div className="text-5xl font-mono font-bold text-primary mb-6">
                     {formatTime(seconds)}
                 </div>
 
-                <div className="flex gap-3">
-                    <button
-                        onClick={handleReset}
-                        className="flex-1 py-3 px-4 rounded-lg border border-border
-                     font-medium hover:bg-muted transition-colors"
-                    >
-                        Reset
-                    </button>
-                    <button
-                        onClick={() => setIsRunning(!isRunning)}
-                        className={`flex-1 py-3 px-4 rounded-lg font-semibold transition-colors
-                      ${isRunning
-                                ? 'bg-yellow text-background'
-                                : 'bg-primary text-background hover:bg-primary-dim'
-                            }`}
-                    >
-                        {isRunning ? 'Pause' : 'Start'}
-                    </button>
-                </div>
+                <button
+                    onClick={onClose}
+                    className="w-full py-3 px-4 rounded-lg font-semibold transition-colors"
+                    style={{ backgroundColor: '#83a598', color: '#1d2021' }}
+                >
+                    Close
+                </button>
             </div>
         </div>
     )
