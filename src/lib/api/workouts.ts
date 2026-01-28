@@ -2,7 +2,8 @@ import {
     Workout,
     WorkoutExercise,
     WorkoutExerciseWithExercise,
-    WorkoutExerciseInsert
+    WorkoutExerciseInsert,
+    WorkoutWithPreview
 } from '@/types/database'
 import { createClient } from '@/lib/supabase/client'
 import { getExercisesFromDate } from './sets'
@@ -191,4 +192,125 @@ export async function repeatDay(
         .insert(inserts)
 
     if (error) throw error
+}
+
+// Get all workouts with exercise preview
+export async function getAllWorkouts(): Promise<WorkoutWithPreview[]> {
+    const supabase = createClient()
+
+    // Get all workouts with their exercises
+    const { data: workouts, error: workoutsError } = await supabase
+        .from('workouts')
+        .select(`
+            *,
+            workouts_exercises (
+                exercises!inner (
+                    id,
+                    name,
+                    is_deleted
+                )
+            )
+        `)
+        .order('date', { ascending: true })
+
+    if (workoutsError) throw workoutsError
+
+    // Transform to WorkoutWithPreview
+    return (workouts ?? []).map(workout => {
+        const exercises = (workout.workouts_exercises ?? [])
+            .filter((we: { exercises: { is_deleted: boolean } }) => !we.exercises.is_deleted)
+            .map((we: { exercises: { name: string } }) => we.exercises.name)
+
+        return {
+            id: workout.id,
+            date: workout.date,
+            exercise_count: exercises.length,
+            exercise_names: exercises.slice(0, 3)
+        }
+    })
+}
+
+// Delete a workout and all its exercises
+export async function deleteWorkout(workoutId: number): Promise<void> {
+    const supabase = createClient()
+
+    // Delete workout (cascade will remove workouts_exercises)
+    const { error } = await supabase
+        .from('workouts')
+        .delete()
+        .eq('id', workoutId)
+
+    if (error) throw error
+}
+
+// Copy a workout to a new date
+// Returns 'created' if new workout was created, 'replaced' if existing was replaced, 'conflict' if target exists and needs confirmation
+export async function copyWorkout(
+    sourceWorkoutId: number,
+    targetDate: string,
+    replaceIfExists: boolean = false
+): Promise<{ status: 'created' | 'replaced' | 'conflict'; workoutId?: number }> {
+    const supabase = createClient()
+
+    // Check if target date already has a workout
+    const { data: existingWorkout } = await supabase
+        .from('workouts')
+        .select('id')
+        .eq('date', targetDate)
+        .single()
+
+    if (existingWorkout && !replaceIfExists) {
+        return { status: 'conflict' }
+    }
+
+    // Get source workout exercises
+    const { data: sourceExercises, error: sourceError } = await supabase
+        .from('workouts_exercises')
+        .select('exercise_id, sort_order, details')
+        .eq('workout_id', sourceWorkoutId)
+        .order('sort_order', { ascending: true })
+
+    if (sourceError) throw sourceError
+
+    let targetWorkoutId: number
+
+    if (existingWorkout) {
+        // Delete existing exercises from target workout
+        await supabase
+            .from('workouts_exercises')
+            .delete()
+            .eq('workout_id', existingWorkout.id)
+        targetWorkoutId = existingWorkout.id
+    } else {
+        // Create new workout
+        const { data: newWorkout, error: createError } = await supabase
+            .from('workouts')
+            .insert({ date: targetDate })
+            .select()
+            .single()
+
+        if (createError) throw createError
+        targetWorkoutId = newWorkout.id
+    }
+
+    // Copy exercises to target workout
+    if (sourceExercises && sourceExercises.length > 0) {
+        const inserts = sourceExercises.map(ex => ({
+            workout_id: targetWorkoutId,
+            exercise_id: ex.exercise_id,
+            sort_order: ex.sort_order,
+            details: ex.details
+        }))
+
+        const { error: insertError } = await supabase
+            .from('workouts_exercises')
+            .insert(inserts)
+
+        if (insertError) throw insertError
+    }
+
+    return {
+        status: existingWorkout ? 'replaced' : 'created',
+        workoutId: targetWorkoutId
+    }
 }

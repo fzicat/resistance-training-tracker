@@ -125,6 +125,37 @@ Build a script to create tables on Supabase.
 - Delete exercise (soft delete)
 - Empty state: "Create your first exercise" CTA
 
+### Scheduled Workouts
+
+- Accessible via hamburger menu → **"Scheduled Workouts"**
+- Lists all workouts (including today's date)
+- Sorted by **date ascending** (nearest date first)
+- Today's workout is highlighted
+- Each row displays:
+  - Date
+  - Exercise count
+  - First 2-3 exercise names (truncated if more)
+
+**Actions:**
+- **Tap a workout**: Opens editor view for that workout
+- **"+" button**: Create new workout
+  - Opens date picker to select any date
+  - After selecting date, opens workout editor
+
+**Workout Editor:**
+- **Add** exercises from library
+- **Remove** exercises from workout
+- **Reorder** via drag-and-drop (up/down arrows)
+- **Edit Details** text per exercise
+- **Copy to Date** button:
+  - Opens date picker to select target date
+  - If target date already has a workout: prompt to **Replace** or **Cancel**
+- **Delete workout** button:
+  - Shows confirmation modal
+  - Upon confirm, removes entire workout and returns to list
+
+**Empty State:** "No scheduled workouts. Tap + to create one."
+
 ### Settings
 
 - Logout
@@ -253,6 +284,7 @@ gray           = #928374
 
 - **Hamburger menu** with items:
   - Today's Workout
+  - Scheduled Workouts
   - Exercise Library
   - Settings
 - Back button follows natural browser history
@@ -279,7 +311,6 @@ gray           = #928374
 
 ## Future Versions (Out of Scope for V1)
 
-- Schedule workout for a future date
 - Superset management and grouping
 - "Workout journal" view (all logs for a specific date across all exercises)
 - PWA / offline support

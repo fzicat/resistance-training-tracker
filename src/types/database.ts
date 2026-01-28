@@ -149,3 +149,9 @@ export type WorkoutExerciseWithExercise = WorkoutExercise & {
 export type SetWithExercise = Set & {
     exercises: Exercise
 }
+
+// Type for workout list with exercise preview
+export type WorkoutWithPreview = Workout & {
+    exercise_count: number
+    exercise_names: string[]
+}
