@@ -550,7 +550,7 @@ function AddExerciseModal({ onClose, onSelect }: AddExerciseModalProps) {
                 setLoading(true)
                 try {
                     const data = await searchExercises('')
-                    setResults(data.slice(0, 10))
+                    setResults(data.slice(0, 3))
                 } finally {
                     setLoading(false)
                 }
@@ -560,7 +560,7 @@ function AddExerciseModal({ onClose, onSelect }: AddExerciseModalProps) {
             setLoading(true)
             try {
                 const data = await searchExercises(search)
-                setResults(data.slice(0, 10))
+                setResults(data.slice(0, 3))
             } finally {
                 setLoading(false)
             }
@@ -571,7 +571,7 @@ function AddExerciseModal({ onClose, onSelect }: AddExerciseModalProps) {
     }, [search])
 
     return (
-        <div className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/50 flex items-start pt-8 justify-center z-50">
             <div className="bg-card rounded-t-xl sm:rounded-xl w-full sm:max-w-md max-h-[80vh] flex flex-col shadow-xl">
                 <div className="p-4 border-b border-border flex items-center justify-between">
                     <h2 className="text-lg font-semibold text-foreground">Add Exercise</h2>

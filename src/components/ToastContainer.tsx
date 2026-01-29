@@ -8,7 +8,7 @@ export function ToastContainer() {
     if (toasts.length === 0) return null
 
     return (
-        <div className="fixed bottom-4 left-4 right-4 z-50 flex flex-col gap-2 pointer-events-none">
+        <div className="fixed top-4 left-4 right-4 z-50 flex flex-col gap-2 pointer-events-none">
             {toasts.map(toast => (
                 <div
                     key={toast.id}
@@ -16,7 +16,7 @@ export function ToastContainer() {
             pointer-events-auto
             flex items-center justify-between gap-3
             px-4 py-3 rounded-lg shadow-lg
-            animate-slide-up
+            animate-slide-down
             ${toast.type === 'success' ? 'bg-success text-background' : ''}
             ${toast.type === 'error' ? 'bg-destructive text-background' : ''}
             ${toast.type === 'info' ? 'bg-bg2 text-foreground' : ''}
@@ -56,18 +56,18 @@ export function ToastContainer() {
                 </div>
             ))}
             <style jsx>{`
-        @keyframes slide-up {
+        @keyframes slide-down {
           from {
             opacity: 0;
-            transform: translateY(16px);
+            transform: translateY(-16px);
           }
           to {
             opacity: 1;
             transform: translateY(0);
           }
         }
-        .animate-slide-up {
-          animation: slide-up 0.2s ease-out;
+        .animate-slide-down {
+          animation: slide-down 0.2s ease-out;
         }
       `}</style>
         </div>

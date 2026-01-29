@@ -366,7 +366,7 @@ function AddExerciseModal({ onClose, onSelect }: AddExerciseModalProps) {
   useEffect(() => {
     // Load all exercises initially
     getExercises().then(data => {
-      setExercises(data.slice(0, 10))
+      setExercises(data.slice(0, 3))
       setIsLoading(false)
     })
   }, [])
@@ -374,19 +374,19 @@ function AddExerciseModal({ onClose, onSelect }: AddExerciseModalProps) {
   useEffect(() => {
     if (query.trim()) {
       setIsLoading(true)
-      searchExercises(query, 10).then(data => {
+      searchExercises(query, 3).then(data => {
         setExercises(data)
         setIsLoading(false)
       })
     } else {
       getExercises().then(data => {
-        setExercises(data.slice(0, 10))
+        setExercises(data.slice(0, 3))
       })
     }
   }, [query])
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
+    <div className="fixed inset-0 z-50 flex items-start pt-8 justify-center">
       <div className="absolute inset-0 bg-black/50" onClick={onClose} />
       <div className="relative bg-card rounded-t-xl sm:rounded-xl w-full max-w-sm 
                     max-h-[70vh] flex flex-col border border-border shadow-xl">
