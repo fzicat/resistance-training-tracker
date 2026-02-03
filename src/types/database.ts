@@ -11,6 +11,8 @@ export type ExerciseMetrics = {
     reps?: boolean
     time?: boolean
     distance?: boolean
+    unilateral?: boolean
+    dual_implements?: boolean
 }
 
 export interface Database {

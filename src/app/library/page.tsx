@@ -189,6 +189,8 @@ function formatMetrics(metrics: ExerciseMetrics): string {
     if (metrics.reps) parts.push('Reps')
     if (metrics.time) parts.push('Time')
     if (metrics.distance) parts.push('Distance')
+    if (metrics.unilateral) parts.push('Unilateral')
+    if (metrics.dual_implements) parts.push('Dual Weights')
     return parts.join(' • ') || 'No metrics'
 }
 
@@ -201,7 +203,7 @@ interface ExerciseModalProps {
 function ExerciseModal({ exercise, onClose, onSave }: ExerciseModalProps) {
     const [name, setName] = useState(exercise?.name ?? '')
     const [metrics, setMetrics] = useState<ExerciseMetrics>(
-        exercise?.metrics ?? { weight: true, reps: true, time: false, distance: false }
+        exercise?.metrics ?? { weight: true, reps: true, time: false, distance: false, unilateral: false, dual_implements: false }
     )
     const [isSaving, setIsSaving] = useState(false)
 
@@ -272,6 +274,47 @@ function ExerciseModal({ exercise, onClose, onSave }: ExerciseModalProps) {
                                 </button>
                             ))}
                         </div>
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium mb-2">
+                            Volume multipliers
+                        </label>
+                        <div className="grid grid-cols-2 gap-2">
+                            <button
+                                type="button"
+                                onClick={() => toggleMetric('unilateral')}
+                                className={`
+                                    px-4 py-3 rounded-lg border text-sm font-medium
+                                    transition-colors
+                                    ${metrics.unilateral
+                                        ? 'border-primary text-primary'
+                                        : 'bg-muted border-border text-muted-foreground'
+                                    }
+                                `}
+                                style={metrics.unilateral ? { backgroundColor: 'rgba(254, 128, 25, 0.2)' } : undefined}
+                            >
+                                Unilateral
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => toggleMetric('dual_implements')}
+                                className={`
+                                    px-4 py-3 rounded-lg border text-sm font-medium
+                                    transition-colors
+                                    ${metrics.dual_implements
+                                        ? 'border-primary text-primary'
+                                        : 'bg-muted border-border text-muted-foreground'
+                                    }
+                                `}
+                                style={metrics.dual_implements ? { backgroundColor: 'rgba(254, 128, 25, 0.2)' } : undefined}
+                            >
+                                Dual Weights
+                            </button>
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-2">
+                            Each enabled option multiplies total volume by 2
+                        </p>
                     </div>
 
                     <div className="flex gap-3 pt-2">

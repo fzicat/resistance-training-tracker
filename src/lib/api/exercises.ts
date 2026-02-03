@@ -99,7 +99,7 @@ export async function getMRUExercises(limit = 10): Promise<Exercise[]> {
 // Create a new exercise
 export async function createExercise(
     name: string,
-    metrics: ExerciseMetrics = { weight: true, reps: true, time: false, distance: false }
+    metrics: ExerciseMetrics = { weight: true, reps: true, time: false, distance: false, unilateral: false, dual_implements: false }
 ): Promise<Exercise> {
     const supabase = createClient()
     const insert: ExerciseInsert = { name: name.trim(), metrics }

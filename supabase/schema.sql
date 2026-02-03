@@ -4,7 +4,7 @@
 CREATE TABLE IF NOT EXISTS exercises (
     id SERIAL PRIMARY KEY,
     name TEXT NOT NULL,
-    metrics JSONB NOT NULL DEFAULT '{"weight": true, "reps": true, "time": false, "distance": false}',
+    metrics JSONB NOT NULL DEFAULT '{"weight": true, "reps": true, "time": false, "distance": false, "unilateral": false, "dual_implements": false}',
     is_deleted BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );

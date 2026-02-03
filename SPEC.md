@@ -23,11 +23,15 @@ Build a script to create tables on Supabase.
 |--------------|---------|-------------------------------------------|
 | id           | integer | auto, pk                                   |
 | name         | text    | case-insensitive unique constraint         |
-| metrics      | jsonb   | e.g. `{"weight": true, "reps": true, "time": false, "distance": false}` |
+| metrics      | jsonb   | e.g. `{"weight": true, "reps": true, "time": false, "distance": false, "unilateral": false, "dual_implements": false}` |
 | is_deleted   | bool    | soft delete (default: false)               |
 | created_at   | timestamp | auto                                     |
 
 > **Note**: Using JSONB for metrics allows future extensibility (e.g., adding "tempo", "band_resistance") without schema migrations.
+
+**Volume Multiplier Fields** (in `metrics` JSONB):
+- `unilateral`: When true, logged volume represents one side only (total volume ×2)
+- `dual_implements`: When true, logged weight is per implement (total volume ×2)
 
 ### Sets
 | Column       | Type    | Notes                                      |
