@@ -171,7 +171,7 @@ export default function ExercisePage({ params }: PageProps) {
     const metrics = exercise.metrics
 
     return (
-        <div className="max-w-md mx-auto py-6">
+        <div className="max-w-md mx-auto py-4">
             {/* Header */}
             <div className="flex items-center gap-3 mb-2">
                 <button
@@ -188,7 +188,7 @@ export default function ExercisePage({ params }: PageProps) {
 
             {/* Volume Indicators */}
             {(metrics.unilateral || metrics.dual_implements) && (
-                <div className="flex flex-wrap gap-2 mb-6">
+                <div className="flex flex-wrap gap-2 mb-4">
                     {metrics.unilateral && (
                         <div
                             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium"
@@ -221,23 +221,24 @@ export default function ExercisePage({ params }: PageProps) {
             )}
 
             {/* Input Form */}
-            <div className="bg-card rounded-xl p-4 border border-border mb-6">
+            <div className="bg-card rounded-xl p-3 border border-border mb-4">
                 {editingSet && (
-                    <div className="flex items-center justify-between mb-3 pb-3 border-b border-border">
+                    <div className="flex items-center justify-between mb-2 pb-2 border-b border-border">
                         <span className="text-sm text-muted-foreground">Editing set</span>
                         <button
                             onClick={handleCancelEdit}
-                            className="text-sm text-primary hover:underline"
+                            className="text-sm font-medium px-3 py-1 rounded-md text-background hover:opacity-90 transition-opacity"
+                            style={{ backgroundColor: 'var(--destructive)' }}
                         >
                             Cancel
                         </button>
                     </div>
                 )}
 
-                <div className="space-y-4">
+                <div className="space-y-2.5">
                     {metrics.weight && (
                         <div>
-                            <label htmlFor="weight" className="block text-sm font-medium mb-1.5">
+                            <label htmlFor="weight" className="block text-xs font-medium mb-1">
                                 Weight (lbs)
                             </label>
                             <input
@@ -246,8 +247,8 @@ export default function ExercisePage({ params }: PageProps) {
                                 inputMode="numeric"
                                 value={weight}
                                 onChange={(e) => setWeight(e.target.value)}
-                                className="w-full px-4 py-3 rounded-lg bg-muted border border-border
-                         text-foreground text-lg
+                                className="w-full px-3 py-2 rounded-lg bg-muted border border-border
+                         text-foreground text-base
                          focus:outline-none focus:ring-2 focus:ring-primary"
                                 placeholder="0"
                             />
@@ -256,7 +257,7 @@ export default function ExercisePage({ params }: PageProps) {
 
                     {metrics.reps && (
                         <div>
-                            <label htmlFor="reps" className="block text-sm font-medium mb-1.5">
+                            <label htmlFor="reps" className="block text-xs font-medium mb-1">
                                 Reps
                             </label>
                             <input
@@ -265,8 +266,8 @@ export default function ExercisePage({ params }: PageProps) {
                                 inputMode="numeric"
                                 value={reps}
                                 onChange={(e) => setReps(e.target.value)}
-                                className="w-full px-4 py-3 rounded-lg bg-muted border border-border
-                         text-foreground text-lg
+                                className="w-full px-3 py-2 rounded-lg bg-muted border border-border
+                         text-foreground text-base
                          focus:outline-none focus:ring-2 focus:ring-primary"
                                 placeholder="0"
                             />
@@ -275,7 +276,7 @@ export default function ExercisePage({ params }: PageProps) {
 
                     {metrics.time && (
                         <div>
-                            <label htmlFor="time" className="block text-sm font-medium mb-1.5">
+                            <label htmlFor="time" className="block text-xs font-medium mb-1">
                                 Time (seconds)
                             </label>
                             <input
@@ -284,8 +285,8 @@ export default function ExercisePage({ params }: PageProps) {
                                 inputMode="numeric"
                                 value={time}
                                 onChange={(e) => setTime(e.target.value)}
-                                className="w-full px-4 py-3 rounded-lg bg-muted border border-border
-                         text-foreground text-lg
+                                className="w-full px-3 py-2 rounded-lg bg-muted border border-border
+                         text-foreground text-base
                          focus:outline-none focus:ring-2 focus:ring-primary"
                                 placeholder="0"
                             />
@@ -294,7 +295,7 @@ export default function ExercisePage({ params }: PageProps) {
 
                     {metrics.distance && (
                         <div>
-                            <label htmlFor="distance" className="block text-sm font-medium mb-1.5">
+                            <label htmlFor="distance" className="block text-xs font-medium mb-1">
                                 Distance (meters)
                             </label>
                             <input
@@ -303,8 +304,8 @@ export default function ExercisePage({ params }: PageProps) {
                                 inputMode="numeric"
                                 value={distance}
                                 onChange={(e) => setDistance(e.target.value)}
-                                className="w-full px-4 py-3 rounded-lg bg-muted border border-border
-                         text-foreground text-lg
+                                className="w-full px-3 py-2 rounded-lg bg-muted border border-border
+                         text-foreground text-base
                          focus:outline-none focus:ring-2 focus:ring-primary"
                                 placeholder="0"
                             />
@@ -313,7 +314,7 @@ export default function ExercisePage({ params }: PageProps) {
 
                     {/* RIR is always available */}
                     <div>
-                        <label htmlFor="rir" className="block text-sm font-medium mb-1.5">
+                        <label htmlFor="rir" className="block text-xs font-medium mb-1">
                             RIR (0-10)
                         </label>
                         <input
@@ -324,51 +325,68 @@ export default function ExercisePage({ params }: PageProps) {
                             onChange={(e) => setRir(e.target.value)}
                             min="0"
                             max="10"
-                            className="w-full px-4 py-3 rounded-lg bg-muted border border-border
-                       text-foreground text-lg
+                            className="w-full px-3 py-2 rounded-lg bg-muted border border-border
+                       text-foreground text-base
                        focus:outline-none focus:ring-2 focus:ring-primary"
                             placeholder="0"
                         />
                     </div>
 
-                    <button
-                        onClick={handleSave}
-                        disabled={isSaving}
-                        className="w-full py-4 px-4 rounded-lg bg-primary text-background
-                     font-semibold text-lg
-                     hover:bg-primary-dim transition-colors
-                     disabled:opacity-50 disabled:cursor-not-allowed
-                     active:scale-[0.98] transition-transform"
-                    >
-                        {isSaving
-                            ? 'Saving...'
-                            : editingSet
-                                ? 'Update Set'
-                                : 'Save Set'
-                        }
-                    </button>
+                    <div className="flex justify-center">
+                        <button
+                            onClick={handleSave}
+                            disabled={isSaving}
+                            className="py-2.5 px-6 rounded-lg text-foreground
+                         font-semibold text-base
+                         hover:opacity-90 transition-colors
+                         disabled:opacity-50 disabled:cursor-not-allowed
+                         active:scale-[0.98] transition-transform"
+                            style={{ backgroundColor: 'var(--bg2)', border: '2px solid var(--orange)', color: 'var(--orange)' }}
+                        >
+                            {isSaving
+                                ? 'Saving...'
+                                : editingSet
+                                    ? 'Update Set'
+                                    : 'Save Set'
+                            }
+                        </button>
+                    </div>
                 </div>
             </div>
 
             {/* Set History */}
             <div>
-                <h2 className="text-lg font-semibold mb-3">History</h2>
+                <h2 className="text-base font-semibold mb-2">History</h2>
                 {sets.length === 0 ? (
                     <p className="text-center text-muted-foreground py-8">
                         No history yet
                     </p>
                 ) : (
                     <>
-                        <ul className="space-y-2">
-                            {sets.map(set => (
-                                <SetHistoryItem
-                                    key={set.id}
-                                    set={set}
-                                    metrics={metrics}
-                                    onEdit={() => handleEdit(set)}
-                                    onDelete={() => handleDelete(set.id)}
-                                />
-                            ))}
+                        {/* Grid header */}
+                        <div
+                            className="grid items-center px-2 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider border-b border-border mb-0.5"
+                            style={{ gridTemplateColumns: 'minmax(80px, auto) 1fr auto' }}
+                        >
+                            <span>Date</span>
+                            <span>Metrics</span>
+                            <span className="text-right">RIR</span>
+                        </div>
+                        <ul className="space-y-0.5">
+                            {sets.map(set => {
+                                const today = new Date().toLocaleDateString('en-CA')
+                                const setDate = new Date(set.logged_at).toLocaleDateString('en-CA')
+                                return (
+                                    <SetHistoryItem
+                                        key={set.id}
+                                        set={set}
+                                        metrics={metrics}
+                                        isToday={setDate === today}
+                                        onEdit={() => handleEdit(set)}
+                                        onDelete={() => handleDelete(set.id)}
+                                    />
+                                )
+                            })}
                         </ul>
                         {hasMore && (
                             <button
@@ -407,11 +425,12 @@ export default function ExercisePage({ params }: PageProps) {
 interface SetHistoryItemProps {
     set: Set
     metrics: Exercise['metrics']
+    isToday: boolean
     onEdit: () => void
     onDelete: () => void
 }
 
-function SetHistoryItem({ set, metrics, onEdit, onDelete }: SetHistoryItemProps) {
+function SetHistoryItem({ set, metrics, isToday, onEdit, onDelete }: SetHistoryItemProps) {
     const [showActions, setShowActions] = useState(false)
     const [startX, setStartX] = useState(0)
     const [offsetX, setOffsetX] = useState(0)
@@ -442,19 +461,24 @@ function SetHistoryItem({ set, metrics, onEdit, onDelete }: SetHistoryItemProps)
         return date.toLocaleDateString('en-US', {
             month: 'short',
             day: 'numeric',
-            hour: 'numeric',
-            minute: '2-digit'
         })
     }
 
-    const buildMetricsDisplay = () => {
+    const formatTime = (dateStr: string) => {
+        const date = new Date(dateStr)
+        return date.toLocaleTimeString('en-US', {
+            hour: 'numeric',
+            minute: '2-digit',
+        })
+    }
+
+    const buildMetricsParts = () => {
         const parts: string[] = []
         if (metrics.weight && set.weight !== null) parts.push(`${set.weight} lbs`)
         if (metrics.reps && set.reps !== null) parts.push(`${set.reps} reps`)
         if (metrics.time && set.time !== null) parts.push(`${set.time}s`)
         if (metrics.distance && set.distance !== null) parts.push(`${set.distance}m`)
-        if (set.rir !== null) parts.push(`RIR ${set.rir}`)
-        return parts.join(' • ')
+        return parts.join(' · ')
     }
 
     return (
@@ -476,10 +500,14 @@ function SetHistoryItem({ set, metrics, onEdit, onDelete }: SetHistoryItemProps)
                 </button>
             </div>
 
-            {/* Main content */}
+            {/* Main content - grid row */}
             <div
-                className="relative bg-card border border-border p-3 transition-transform"
-                style={{ transform: `translateX(-${offsetX}px)` }}
+                className="relative grid items-center px-2 py-1.5 border-b border-border/50 transition-transform cursor-pointer"
+                style={{
+                    gridTemplateColumns: 'minmax(80px, auto) 1fr auto',
+                    transform: `translateX(-${offsetX}px)`,
+                    backgroundColor: isToday ? 'rgba(254, 128, 25, 0.10)' : 'transparent',
+                }}
                 onTouchStart={handleTouchStart}
                 onTouchMove={handleTouchMove}
                 onTouchEnd={handleTouchEnd}
@@ -491,16 +519,19 @@ function SetHistoryItem({ set, metrics, onEdit, onDelete }: SetHistoryItemProps)
                     }
                 }}
             >
-                <div className="flex items-center justify-between">
-                    <div>
-                        <p className="font-medium">{buildMetricsDisplay()}</p>
-                        <p className="text-sm text-muted-foreground">{formatDate(set.logged_at)}</p>
-                    </div>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-muted-foreground">
-                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                    </svg>
+                {/* Date column */}
+                <div className="pr-3">
+                    <p className="text-sm font-medium">{formatDate(set.logged_at)}</p>
+                    <p className="text-xs text-muted-foreground">{formatTime(set.logged_at)}</p>
                 </div>
+
+                {/* Metrics column */}
+                <p className="text-sm font-medium truncate">{buildMetricsParts()}</p>
+
+                {/* RIR column */}
+                <span className="text-sm text-muted-foreground text-right pl-3 tabular-nums">
+                    {set.rir !== null ? set.rir : '—'}
+                </span>
             </div>
         </li>
     )
