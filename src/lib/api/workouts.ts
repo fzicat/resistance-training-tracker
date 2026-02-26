@@ -230,6 +230,31 @@ export async function getAllWorkouts(): Promise<WorkoutWithPreview[]> {
     })
 }
 
+// Get exercise details for a specific date (from workouts_exercises)
+export async function getExerciseDetailsForDate(
+    exerciseId: number,
+    date: string
+): Promise<string | null> {
+    const supabase = createClient()
+
+    const { data: workout } = await supabase
+        .from('workouts')
+        .select('id')
+        .eq('date', date)
+        .single()
+
+    if (!workout) return null
+
+    const { data } = await supabase
+        .from('workouts_exercises')
+        .select('details')
+        .eq('workout_id', workout.id)
+        .eq('exercise_id', exerciseId)
+        .single()
+
+    return data?.details ?? null
+}
+
 // Delete a workout and all its exercises
 export async function deleteWorkout(workoutId: number): Promise<void> {
     const supabase = createClient()
