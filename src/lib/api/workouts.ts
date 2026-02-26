@@ -255,6 +255,37 @@ export async function getExerciseDetailsForDate(
     return data?.details ?? null
 }
 
+// Get adjacent exercises in today's workout plan
+export async function getAdjacentExercises(
+    exerciseId: number,
+    date: string
+): Promise<{
+    prev: { id: number; name: string } | null
+    next: { id: number; name: string } | null
+}> {
+    const { exercises } = await getWorkoutForDate(date)
+
+    if (exercises.length === 0) {
+        return { prev: null, next: null }
+    }
+
+    const currentIndex = exercises.findIndex(e => e.exercise_id === exerciseId)
+
+    if (currentIndex === -1) {
+        return { prev: null, next: null }
+    }
+
+    const prev = currentIndex > 0
+        ? { id: exercises[currentIndex - 1].exercise_id, name: exercises[currentIndex - 1].exercises.name }
+        : null
+
+    const next = currentIndex < exercises.length - 1
+        ? { id: exercises[currentIndex + 1].exercise_id, name: exercises[currentIndex + 1].exercises.name }
+        : null
+
+    return { prev, next }
+}
+
 // Delete a workout and all its exercises
 export async function deleteWorkout(workoutId: number): Promise<void> {
     const supabase = createClient()

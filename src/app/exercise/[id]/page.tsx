@@ -2,9 +2,10 @@
 
 import { useState, useEffect, useCallback, use } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { Exercise, Set } from '@/types/database'
 import { getExercise } from '@/lib/api/exercises'
-import { getExerciseDetailsForDate } from '@/lib/api/workouts'
+import { getExerciseDetailsForDate, getAdjacentExercises } from '@/lib/api/workouts'
 import {
     getSetsForExercise,
     getLastSetForExercise,
@@ -33,6 +34,10 @@ export default function ExercisePage({ params }: PageProps) {
     const [showStopwatch, setShowStopwatch] = useState(false)
     const [editingSet, setEditingSet] = useState<Set | null>(null)
     const [exerciseDetails, setExerciseDetails] = useState<string | null>(null)
+    const [adjacentExercises, setAdjacentExercises] = useState<{
+        prev: { id: number; name: string } | null
+        next: { id: number; name: string } | null
+    }>({ prev: null, next: null })
 
     // Form state
     const [weight, setWeight] = useState<string>('')
@@ -71,6 +76,10 @@ export default function ExercisePage({ params }: PageProps) {
             const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
             const details = await getExerciseDetailsForDate(exerciseId, todayStr)
             setExerciseDetails(details)
+
+            // Load adjacent exercises in today's workout
+            const adjacent = await getAdjacentExercises(exerciseId, todayStr)
+            setAdjacentExercises(adjacent)
         } catch {
             showToast('Failed to load exercise', 'error')
         } finally {
@@ -199,7 +208,39 @@ export default function ExercisePage({ params }: PageProps) {
                 <p className="text-sm text-muted-foreground ml-10 -mt-1 mb-1">{exerciseDetails}</p>
             )}
 
-
+            {/* Prev/Next Exercise Navigation */}
+            {(adjacentExercises.prev || adjacentExercises.next) && (
+                <div className="flex items-center justify-between mb-3 px-1">
+                    {adjacentExercises.prev ? (
+                        <Link
+                            href={`/exercise/${adjacentExercises.prev.id}`}
+                            className="flex items-center gap-1.5 text-sm font-medium transition-colors rounded-md px-2 py-1"
+                            style={{ color: 'var(--orange)' }}
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <polyline points="15 18 9 12 15 6" />
+                            </svg>
+                            <span className="truncate max-w-[120px]">{adjacentExercises.prev.name}</span>
+                        </Link>
+                    ) : (
+                        <span />
+                    )}
+                    {adjacentExercises.next ? (
+                        <Link
+                            href={`/exercise/${adjacentExercises.next.id}`}
+                            className="flex items-center gap-1.5 text-sm font-medium transition-colors rounded-md px-2 py-1"
+                            style={{ color: 'var(--orange)' }}
+                        >
+                            <span className="truncate max-w-[120px]">{adjacentExercises.next.name}</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <polyline points="9 6 15 12 9 18" />
+                            </svg>
+                        </Link>
+                    ) : (
+                        <span />
+                    )}
+                </div>
+            )}
 
             {/* Input Form */}
             <div className="bg-card rounded-xl p-3 border border-border mb-4">
