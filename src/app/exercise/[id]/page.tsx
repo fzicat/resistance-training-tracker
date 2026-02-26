@@ -237,8 +237,8 @@ export default function ExercisePage({ params }: PageProps) {
 
                 <div className="space-y-2.5">
                     {metrics.weight && (
-                        <div>
-                            <label htmlFor="weight" className="block text-xs font-medium mb-1">
+                        <div className="flex items-center gap-3">
+                            <label htmlFor="weight" className="text-sm font-medium whitespace-nowrap" style={{ minWidth: '110px' }}>
                                 Weight (lbs)
                             </label>
                             <input
@@ -247,7 +247,7 @@ export default function ExercisePage({ params }: PageProps) {
                                 inputMode="numeric"
                                 value={weight}
                                 onChange={(e) => setWeight(e.target.value)}
-                                className="w-full px-3 py-2 rounded-lg bg-muted border border-border
+                                className="flex-1 px-3 py-2 rounded-lg bg-muted border border-border
                          text-foreground text-base
                          focus:outline-none focus:ring-2 focus:ring-primary"
                                 placeholder="0"
@@ -256,8 +256,8 @@ export default function ExercisePage({ params }: PageProps) {
                     )}
 
                     {metrics.reps && (
-                        <div>
-                            <label htmlFor="reps" className="block text-xs font-medium mb-1">
+                        <div className="flex items-center gap-3">
+                            <label htmlFor="reps" className="text-sm font-medium whitespace-nowrap" style={{ minWidth: '110px' }}>
                                 Reps
                             </label>
                             <input
@@ -266,7 +266,7 @@ export default function ExercisePage({ params }: PageProps) {
                                 inputMode="numeric"
                                 value={reps}
                                 onChange={(e) => setReps(e.target.value)}
-                                className="w-full px-3 py-2 rounded-lg bg-muted border border-border
+                                className="flex-1 px-3 py-2 rounded-lg bg-muted border border-border
                          text-foreground text-base
                          focus:outline-none focus:ring-2 focus:ring-primary"
                                 placeholder="0"
@@ -275,8 +275,8 @@ export default function ExercisePage({ params }: PageProps) {
                     )}
 
                     {metrics.time && (
-                        <div>
-                            <label htmlFor="time" className="block text-xs font-medium mb-1">
+                        <div className="flex items-center gap-3">
+                            <label htmlFor="time" className="text-sm font-medium whitespace-nowrap" style={{ minWidth: '110px' }}>
                                 Time (seconds)
                             </label>
                             <input
@@ -285,7 +285,7 @@ export default function ExercisePage({ params }: PageProps) {
                                 inputMode="numeric"
                                 value={time}
                                 onChange={(e) => setTime(e.target.value)}
-                                className="w-full px-3 py-2 rounded-lg bg-muted border border-border
+                                className="flex-1 px-3 py-2 rounded-lg bg-muted border border-border
                          text-foreground text-base
                          focus:outline-none focus:ring-2 focus:ring-primary"
                                 placeholder="0"
@@ -294,8 +294,8 @@ export default function ExercisePage({ params }: PageProps) {
                     )}
 
                     {metrics.distance && (
-                        <div>
-                            <label htmlFor="distance" className="block text-xs font-medium mb-1">
+                        <div className="flex items-center gap-3">
+                            <label htmlFor="distance" className="text-sm font-medium whitespace-nowrap" style={{ minWidth: '110px' }}>
                                 Distance (meters)
                             </label>
                             <input
@@ -304,7 +304,7 @@ export default function ExercisePage({ params }: PageProps) {
                                 inputMode="numeric"
                                 value={distance}
                                 onChange={(e) => setDistance(e.target.value)}
-                                className="w-full px-3 py-2 rounded-lg bg-muted border border-border
+                                className="flex-1 px-3 py-2 rounded-lg bg-muted border border-border
                          text-foreground text-base
                          focus:outline-none focus:ring-2 focus:ring-primary"
                                 placeholder="0"
@@ -313,8 +313,8 @@ export default function ExercisePage({ params }: PageProps) {
                     )}
 
                     {/* RIR is always available */}
-                    <div>
-                        <label htmlFor="rir" className="block text-xs font-medium mb-1">
+                    <div className="flex items-center gap-3">
+                        <label htmlFor="rir" className="text-sm font-medium whitespace-nowrap" style={{ minWidth: '110px' }}>
                             RIR (0-10)
                         </label>
                         <input
@@ -325,7 +325,7 @@ export default function ExercisePage({ params }: PageProps) {
                             onChange={(e) => setRir(e.target.value)}
                             min="0"
                             max="10"
-                            className="w-full px-3 py-2 rounded-lg bg-muted border border-border
+                            className="flex-1 px-3 py-2 rounded-lg bg-muted border border-border
                        text-foreground text-base
                        focus:outline-none focus:ring-2 focus:ring-primary"
                             placeholder="0"
