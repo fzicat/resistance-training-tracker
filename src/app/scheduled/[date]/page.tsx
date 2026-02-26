@@ -550,7 +550,7 @@ function AddExerciseModal({ onClose, onSelect }: AddExerciseModalProps) {
                 setLoading(true)
                 try {
                     const data = await searchExercises('')
-                    setResults(data.slice(0, 3))
+                    setResults(data.slice(0, 8))
                 } finally {
                     setLoading(false)
                 }
@@ -560,7 +560,7 @@ function AddExerciseModal({ onClose, onSelect }: AddExerciseModalProps) {
             setLoading(true)
             try {
                 const data = await searchExercises(search)
-                setResults(data.slice(0, 3))
+                setResults(data.slice(0, 8))
             } finally {
                 setLoading(false)
             }

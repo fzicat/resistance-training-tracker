@@ -366,7 +366,7 @@ function AddExerciseModal({ onClose, onSelect }: AddExerciseModalProps) {
   useEffect(() => {
     // Load all exercises initially
     getExercises().then(data => {
-      setExercises(data.slice(0, 3))
+      setExercises(data.slice(0, 8))
       setIsLoading(false)
     })
   }, [])
@@ -380,7 +380,7 @@ function AddExerciseModal({ onClose, onSelect }: AddExerciseModalProps) {
       })
     } else {
       getExercises().then(data => {
-        setExercises(data.slice(0, 3))
+        setExercises(data.slice(0, 8))
       })
     }
   }, [query])
