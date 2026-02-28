@@ -56,7 +56,16 @@ self.addEventListener('fetch', (event) => {
             })
             .catch(() => {
                 // Fallback to cache on network failure
-                return caches.match(event.request);
+                return caches.match(event.request).then((cachedResponse) => {
+                    if (cachedResponse) {
+                        return cachedResponse;
+                    }
+                    // If it's a navigation request and we're offline, return the root page
+                    if (event.request.mode === 'navigate') {
+                        return caches.match('/');
+                    }
+                    return new Response('', { status: 404, statusText: 'Offline' });
+                });
             })
     );
 });
