@@ -3,12 +3,16 @@ import { ThemeProvider } from "@/contexts/ThemeContext"
 import { ToastProvider } from "@/contexts/ToastContext"
 import { ToastContainer } from "@/components/ToastContainer"
 import { Navigation } from "@/components/Navigation"
+import { ServiceWorkerRegistrar } from "@/components/ServiceWorkerRegistrar"
 import "./globals.css"
 
 export const metadata: Metadata = {
   title: "RTT - Resistance Training Tracker",
   description: "A simple, mobile-first app to log exercises set-by-set",
   manifest: "/manifest.json",
+  icons: {
+    apple: "/icon-192.png",
+  },
 }
 
 export const viewport: Viewport = {
@@ -27,6 +31,7 @@ export default function RootLayout({
   return (
     <html lang="en" data-theme="dark" suppressHydrationWarning>
       <body className="min-h-screen bg-background text-foreground antialiased">
+        <ServiceWorkerRegistrar />
         <ThemeProvider>
           <ToastProvider>
             <Navigation />
