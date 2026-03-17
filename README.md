@@ -1,36 +1,135 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# RTT — Resistance Training Tracker
+
+A mobile-first web app for logging resistance training sets at the gym. Built around one core need: **remembering what weight you used last time**.
+
+No coaching, no analytics dashboards, no social features — just fast set logging with automatic recall of your last performance.
+
+## Features
+
+- **Today's Workout** — View scheduled exercises, tap to log sets, or add exercises on the fly
+- **Set Logging** — Weight, reps, time, distance, and RIR (Reps In Reserve) inputs with auto-prefill from your last logged set
+- **Exercise Library** — Create and manage exercises with configurable metrics (weight, reps, time, distance, unilateral, dual implements)
+- **Scheduled Workouts** — Plan workouts for any date, reorder exercises via drag-and-drop, copy workouts between dates
+- **Repeat a Day** — Copy a previous day's exercises into today's workout with auto-generated set summaries
+- **Rest Timer** — Floating stopwatch for timing rest between sets
+- **Swipe-to-Delete** — Swipe set history rows to soft-delete
+- **Dark/Light Theme** — Gruvbox color palette with toggle in settings
+- **PWA Support** — Installable as a standalone app with service worker and manifest
+
+## Tech Stack
+
+| Layer       | Technology                          |
+|-------------|-------------------------------------|
+| Framework   | Next.js 16 (App Router)             |
+| Language    | TypeScript                          |
+| UI          | React 19, Tailwind CSS 4            |
+| Database    | Supabase (PostgreSQL)               |
+| Auth        | Supabase Auth (email/password)      |
+| Deployment  | Vercel                              |
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 20+
+- A [Supabase](https://supabase.com) project
+
+### 1. Clone the repo
+
+```bash
+git clone https://github.com/fzicat/resistance-training-tracker.git
+cd resistance-training-tracker
+```
+
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+### 3. Set up Supabase
+
+Create a new Supabase project and run the schema migration in the SQL Editor:
+
+```bash
+# The schema file is at:
+supabase/schema.sql
+```
+
+This creates the `exercises`, `sets`, `workouts`, and `workouts_exercises` tables with Row Level Security policies for authenticated users.
+
+### 4. Configure environment variables
+
+Create a `.env.local` file:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+```
+
+### 5. Run the dev server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) — sign up with email/password to get started.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+src/
+├── app/
+│   ├── page.tsx              # Today's Workout (home)
+│   ├── layout.tsx            # Root layout with providers
+│   ├── login/page.tsx        # Auth page
+│   ├── exercise/[id]/page.tsx # Set logging + history
+│   ├── library/page.tsx      # Exercise library CRUD
+│   ├── scheduled/            # Scheduled workouts list + editor
+│   │   ├── page.tsx
+│   │   └── [date]/page.tsx
+│   ├── settings/page.tsx     # Theme toggle + logout
+│   ├── auth/callback/route.ts
+│   └── globals.css           # Gruvbox theme variables
+├── components/
+│   ├── Navigation.tsx        # Hamburger slide-out menu
+│   ├── ToastContainer.tsx    # Toast notifications
+│   └── ServiceWorkerRegistrar.tsx
+├── contexts/
+│   ├── ThemeContext.tsx       # Dark/light theme state
+│   └── ToastContext.tsx       # Toast notification state
+├── lib/
+│   ├── api/
+│   │   ├── exercises.ts      # Exercise CRUD + search
+│   │   ├── sets.ts           # Set CRUD + history
+│   │   └── workouts.ts       # Workout CRUD + copy/repeat
+│   └── supabase/
+│       ├── client.ts         # Browser Supabase client
+│       ├── server.ts         # Server Supabase client
+│       └── middleware.ts     # Session refresh middleware
+├── types/
+│   └── database.ts           # TypeScript types for all tables
+└── middleware.ts              # Next.js middleware (auth)
+```
 
-## Learn More
+## Data Model
 
-To learn more about Next.js, take a look at the following resources:
+Four tables power the app:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **exercises** — Name, configurable metric flags (weight/reps/time/distance/unilateral/dual), soft delete
+- **sets** — Individual logged sets with nullable metrics and RIR, linked to an exercise
+- **workouts** — A date (unique) representing a workout day
+- **workouts_exercises** — Junction table linking workouts to exercises with sort order and freeform details text
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Scripts
 
-## Deploy on Vercel
+| Command         | Description              |
+|-----------------|--------------------------|
+| `npm run dev`   | Start dev server         |
+| `npm run build` | Production build         |
+| `npm run start` | Start production server  |
+| `npm run lint`  | Run ESLint               |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## License
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is not currently licensed for distribution.
