@@ -1,71 +1,91 @@
-const CACHE_NAME = 'rtt-cache-v1';
-const STATIC_ASSETS = [
-    '/',
-    '/manifest.json',
-    '/icon-192.png',
-    '/icon-512.png',
+const CACHE_VERSION = 'v2';
+const SHELL_CACHE = `rtt-shell-${CACHE_VERSION}`;
+const RUNTIME_CACHE = `rtt-runtime-${CACHE_VERSION}`;
+
+const APP_SHELL_ASSETS = [
+  '/manifest.json',
+  '/icon-192.png',
+  '/icon-512.png',
+  '/apple-touch-icon.png',
+  '/offline.html',
 ];
 
-// Install: cache static assets
 self.addEventListener('install', (event) => {
-    event.waitUntil(
-        caches.open(CACHE_NAME).then((cache) => {
-            return cache.addAll(STATIC_ASSETS);
-        })
-    );
-    self.skipWaiting();
+  event.waitUntil(
+    caches.open(SHELL_CACHE).then((cache) => cache.addAll(APP_SHELL_ASSETS))
+  );
+  self.skipWaiting();
 });
 
-// Activate: clean up old caches
 self.addEventListener('activate', (event) => {
-    event.waitUntil(
-        caches.keys().then((cacheNames) => {
-            return Promise.all(
-                cacheNames
-                    .filter((name) => name !== CACHE_NAME)
-                    .map((name) => caches.delete(name))
-            );
-        })
-    );
-    self.clients.claim();
+  event.waitUntil(
+    caches.keys().then((keys) =>
+      Promise.all(
+        keys
+          .filter((key) => ![SHELL_CACHE, RUNTIME_CACHE].includes(key))
+          .map((key) => caches.delete(key))
+      )
+    )
+  );
+
+  self.clients.claim();
 });
 
-// Fetch: network-first strategy (fall back to cache)
+self.addEventListener('message', (event) => {
+  if (event.data?.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+});
+
 self.addEventListener('fetch', (event) => {
-    // Only handle GET requests
-    if (event.request.method !== 'GET') return;
+  const { request } = event;
 
-    // Skip non-http(s) requests (e.g. chrome-extension)
-    if (!event.request.url.startsWith('http')) return;
+  if (request.method !== 'GET') return;
 
+  const url = new URL(request.url);
+  if (url.origin !== self.location.origin) return;
+
+  // App shell navigation: network-first, fallback to cached page or offline page.
+  if (request.mode === 'navigate') {
     event.respondWith(
-        fetch(event.request)
-            .then((response) => {
-                // Cache successful responses for static assets
-                if (response.ok) {
-                    const url = new URL(event.request.url);
-                    const isStatic = STATIC_ASSETS.some((a) => url.pathname === a);
-                    if (isStatic) {
-                        const responseClone = response.clone();
-                        caches.open(CACHE_NAME).then((cache) => {
-                            cache.put(event.request, responseClone);
-                        });
-                    }
-                }
-                return response;
-            })
-            .catch(() => {
-                // Fallback to cache on network failure
-                return caches.match(event.request).then((cachedResponse) => {
-                    if (cachedResponse) {
-                        return cachedResponse;
-                    }
-                    // If it's a navigation request and we're offline, return the root page
-                    if (event.request.mode === 'navigate') {
-                        return caches.match('/');
-                    }
-                    return new Response('', { status: 404, statusText: 'Offline' });
-                });
-            })
+      fetch(request)
+        .then((response) => {
+          const copy = response.clone();
+          caches.open(RUNTIME_CACHE).then((cache) => cache.put(request, copy));
+          return response;
+        })
+        .catch(async () => {
+          const cachedPage = await caches.match(request);
+          if (cachedPage) return cachedPage;
+          return caches.match('/offline.html');
+        })
     );
+    return;
+  }
+
+  const isStaticAsset =
+    request.destination === 'script' ||
+    request.destination === 'style' ||
+    request.destination === 'image' ||
+    request.destination === 'font' ||
+    url.pathname.startsWith('/_next/static/');
+
+  if (!isStaticAsset) return;
+
+  // Static assets: cache-first for faster repeat loads and offline support.
+  event.respondWith(
+    caches.match(request).then((cachedResponse) => {
+      if (cachedResponse) return cachedResponse;
+
+      return fetch(request)
+        .then((networkResponse) => {
+          if (networkResponse && networkResponse.ok) {
+            const copy = networkResponse.clone();
+            caches.open(RUNTIME_CACHE).then((cache) => cache.put(request, copy));
+          }
+          return networkResponse;
+        })
+        .catch(() => caches.match('/offline.html'));
+    })
+  );
 });

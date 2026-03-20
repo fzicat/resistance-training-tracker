@@ -75,6 +75,25 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) — sign up with email/password to get started.
 
+## Install as a PWA (mobile)
+
+> Install prompts require HTTPS in production (localhost works for local testing).
+
+### Android (Chrome)
+
+1. Open RTT in Chrome.
+2. Tap **Install app** in the address bar or from the 3-dot menu (**Install app** / **Add to Home screen**).
+3. Confirm install. RTT opens in standalone app mode.
+
+### iPhone (Safari)
+
+1. Open RTT in Safari.
+2. Tap **Share** (square with arrow).
+3. Choose **Add to Home Screen** and confirm.
+4. Launch RTT from the home screen for full-screen app behavior.
+
+If the app was already open during a deploy, fully close and reopen it once to load the newest service worker.
+
 ## Project Structure
 
 ```

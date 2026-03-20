@@ -7,11 +7,27 @@ import { ServiceWorkerRegistrar } from "@/components/ServiceWorkerRegistrar"
 import "./globals.css"
 
 export const metadata: Metadata = {
+  applicationName: "RTT",
   title: "RTT - Resistance Training Tracker",
   description: "A simple, mobile-first app to log exercises set-by-set",
   manifest: "/manifest.json",
   icons: {
-    apple: "/icon-192.png",
+    icon: [
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png" }],
+  },
+  appleWebApp: {
+    capable: true,
+    title: "RTT",
+    statusBarStyle: "black-translucent",
+  },
+  formatDetection: {
+    telephone: false,
+  },
+  other: {
+    "mobile-web-app-capable": "yes",
   },
 }
 
@@ -20,6 +36,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
+  viewportFit: "cover",
   themeColor: "#282828",
 }
 

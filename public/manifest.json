@@ -1,12 +1,16 @@
 {
+  "id": "/",
   "name": "RTT - Resistance Training Tracker",
   "short_name": "RTT",
   "description": "A simple, mobile-first app to log exercises set-by-set",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
   "background_color": "#282828",
-  "theme_color": "#fe8019",
+  "theme_color": "#282828",
+  "lang": "en",
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "/icon-192.png",
