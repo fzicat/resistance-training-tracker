@@ -1,7 +1,7 @@
 # Healthspan MCP Server
 
 A small **read-only** [Model Context Protocol](https://modelcontextprotocol.io/) server that
-exposes your Healthspan data (exercises, sets, workouts) to a local AI agent —
+exposes your Healthspan data (exercises, sets, workouts, daily health logs) to a local AI agent —
 e.g. a Fitness Coach running inside Claude Code, Hermes, or any other MCP-capable harness.
 
 It talks to your Supabase Postgres directly using the **service role key** and only registers
@@ -73,5 +73,20 @@ Same pattern — point at the `src/index.ts` entrypoint and let it speak MCP ove
 | `get_exercise_history({ exercise_id, limit?, from?, to? })` | Sets for one exercise, most recent first. |
 | `list_sets({ exercise_id?, from?, to?, limit? })` | Generic set query across exercises. |
 | `get_summary({ from?, to? })` | Workout / set counts and per-exercise volume in a date range. |
+| `get_daily_log({ date })` | Morning + evening metrics for one day (sleep, HRV, weight, nutrition, alcohol, steps). |
+| `list_daily_logs({ from?, to?, limit? })` | Time-series of daily logs (most recent first) for trend analysis. |
 
 All tools return JSON. Soft-deleted rows (`is_deleted = true`) are excluded everywhere.
+
+### Daily-log field reference
+
+`daily_logs` rows expose these metric columns (all nullable):
+
+- `sleep_duration_minutes` — total sleep in minutes
+- `sleep_score` — 0–100 (manual entry from Fitbit)
+- `sleep_hrv_rmssd` — overnight HRV in ms RMSSD (Fitbit / Pixel Watch)
+- `morning_hrv_rmssd` — morning HRV in ms RMSSD (EliteHRV + Polar H10)
+- `weight_lbs` — body weight in pounds
+- `calories` — total kcal for the day
+- `protein_g`, `fat_g`, `carbs_g`, `alcohol_g` — grams
+- `steps` — daily step count
