@@ -13,6 +13,7 @@ import {
   getWorkoutByDate,
   listRecentWorkouts,
 } from "./tools/workouts.ts";
+import { getDailyLog, listDailyLogs } from "./tools/daily-logs.ts";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 loadDotenv({ path: resolve(__dirname, "../../.env.local") });
@@ -138,6 +139,48 @@ server.registerTool(
     },
   },
   async ({ from, to }) => json(await getSummary({ from, to }))
+);
+
+server.registerTool(
+  "get_daily_log",
+  {
+    title: "Get daily log",
+    description:
+      "Returns the daily health log for one date: morning entries (sleep duration in minutes, " +
+      "sleep score 0-100, sleep HRV RMSSD, morning HRV RMSSD, body weight in lbs) and evening entries " +
+      "(calories, protein/fat/carbs/alcohol in grams, steps). Any field may be null when not logged. " +
+      "Returns null if no entry exists for that date.",
+    inputSchema: {
+      date: z
+        .string()
+        .describe("ISO date (YYYY-MM-DD) of the day to fetch."),
+    },
+  },
+  async ({ date }) => json(await getDailyLog({ date }))
+);
+
+server.registerTool(
+  "list_daily_logs",
+  {
+    title: "List daily logs",
+    description:
+      "Time-series of daily health logs (most recent first). Use for trend analysis: " +
+      "sleep quality, HRV (recovery), body weight, nutrition (calories/macros/alcohol in g), activity (steps). " +
+      "Pair with workout data to correlate recovery markers with training load.",
+    inputSchema: {
+      from: z
+        .string()
+        .optional()
+        .describe("ISO date (YYYY-MM-DD). Only include logs on or after this date."),
+      to: z
+        .string()
+        .optional()
+        .describe("ISO date (YYYY-MM-DD). Only include logs on or before this date."),
+      limit: z.number().int().min(1).max(365).optional(),
+    },
+  },
+  async ({ from, to, limit }) =>
+    json(await listDailyLogs({ from, to, limit }))
 );
 
 const transport = new StdioServerTransport();

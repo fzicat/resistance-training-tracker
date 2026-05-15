@@ -46,11 +46,46 @@ CREATE TABLE IF NOT EXISTS workouts_exercises (
 );
 -- Index for faster workout lookups
 CREATE INDEX IF NOT EXISTS workouts_exercises_workout ON workouts_exercises (workout_id, sort_order);
+-- Daily logs table: one row per day, holds both morning and evening metrics.
+-- All metric columns are nullable so partial entries (morning-only, evening-only) are allowed.
+CREATE TABLE IF NOT EXISTS daily_logs (
+    date DATE PRIMARY KEY,
+    -- Morning entries
+    sleep_duration_minutes INTEGER CHECK (sleep_duration_minutes >= 0),
+    sleep_score INTEGER CHECK (sleep_score BETWEEN 0 AND 100),
+    sleep_hrv_rmssd NUMERIC(6, 2) CHECK (sleep_hrv_rmssd >= 0),
+    morning_hrv_rmssd NUMERIC(6, 2) CHECK (morning_hrv_rmssd >= 0),
+    weight_lbs NUMERIC(6, 2) CHECK (weight_lbs >= 0),
+    -- Evening entries
+    calories INTEGER CHECK (calories >= 0),
+    protein_g NUMERIC(6, 2) CHECK (protein_g >= 0),
+    fat_g NUMERIC(6, 2) CHECK (fat_g >= 0),
+    carbs_g NUMERIC(6, 2) CHECK (carbs_g >= 0),
+    alcohol_g NUMERIC(6, 2) CHECK (alcohol_g >= 0),
+    steps INTEGER CHECK (steps >= 0),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+-- Index for range scans (most-recent-first listings)
+CREATE INDEX IF NOT EXISTS daily_logs_date_desc ON daily_logs (date DESC);
+-- Auto-bump updated_at on UPDATE
+CREATE OR REPLACE FUNCTION daily_logs_set_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+DROP TRIGGER IF EXISTS daily_logs_updated_at ON daily_logs;
+CREATE TRIGGER daily_logs_updated_at
+    BEFORE UPDATE ON daily_logs
+    FOR EACH ROW EXECUTE FUNCTION daily_logs_set_updated_at();
 -- Enable Row Level Security (RLS) for all tables
 ALTER TABLE exercises ENABLE ROW LEVEL SECURITY;
 ALTER TABLE sets ENABLE ROW LEVEL SECURITY;
 ALTER TABLE workouts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE workouts_exercises ENABLE ROW LEVEL SECURITY;
+ALTER TABLE daily_logs ENABLE ROW LEVEL SECURITY;
 -- Since this is a single-user app, we'll create policies that allow authenticated users full access
 -- For exercises
 CREATE POLICY "Allow authenticated users full access to exercises" ON exercises FOR ALL TO authenticated USING (true) WITH CHECK (true);
@@ -60,3 +95,5 @@ CREATE POLICY "Allow authenticated users full access to sets" ON sets FOR ALL TO
 CREATE POLICY "Allow authenticated users full access to workouts" ON workouts FOR ALL TO authenticated USING (true) WITH CHECK (true);
 -- For workouts_exercises
 CREATE POLICY "Allow authenticated users full access to workouts_exercises" ON workouts_exercises FOR ALL TO authenticated USING (true) WITH CHECK (true);
+-- For daily_logs
+CREATE POLICY "Allow authenticated users full access to daily_logs" ON daily_logs FOR ALL TO authenticated USING (true) WITH CHECK (true);

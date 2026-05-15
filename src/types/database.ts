@@ -113,6 +113,56 @@ export interface Database {
                     details?: string | null
                 }
             }
+            daily_logs: {
+                Row: {
+                    date: string
+                    sleep_duration_minutes: number | null
+                    sleep_score: number | null
+                    sleep_hrv_rmssd: number | null
+                    morning_hrv_rmssd: number | null
+                    weight_lbs: number | null
+                    calories: number | null
+                    protein_g: number | null
+                    fat_g: number | null
+                    carbs_g: number | null
+                    alcohol_g: number | null
+                    steps: number | null
+                    created_at: string
+                    updated_at: string
+                }
+                Insert: {
+                    date: string
+                    sleep_duration_minutes?: number | null
+                    sleep_score?: number | null
+                    sleep_hrv_rmssd?: number | null
+                    morning_hrv_rmssd?: number | null
+                    weight_lbs?: number | null
+                    calories?: number | null
+                    protein_g?: number | null
+                    fat_g?: number | null
+                    carbs_g?: number | null
+                    alcohol_g?: number | null
+                    steps?: number | null
+                    created_at?: string
+                    updated_at?: string
+                }
+                Update: {
+                    date?: string
+                    sleep_duration_minutes?: number | null
+                    sleep_score?: number | null
+                    sleep_hrv_rmssd?: number | null
+                    morning_hrv_rmssd?: number | null
+                    weight_lbs?: number | null
+                    calories?: number | null
+                    protein_g?: number | null
+                    fat_g?: number | null
+                    carbs_g?: number | null
+                    alcohol_g?: number | null
+                    steps?: number | null
+                    created_at?: string
+                    updated_at?: string
+                }
+            }
         }
         Views: {
             [_ in never]: never
@@ -142,6 +192,10 @@ export type WorkoutUpdate = Database['public']['Tables']['workouts']['Update']
 export type WorkoutExercise = Database['public']['Tables']['workouts_exercises']['Row']
 export type WorkoutExerciseInsert = Database['public']['Tables']['workouts_exercises']['Insert']
 export type WorkoutExerciseUpdate = Database['public']['Tables']['workouts_exercises']['Update']
+
+export type DailyLog = Database['public']['Tables']['daily_logs']['Row']
+export type DailyLogInsert = Database['public']['Tables']['daily_logs']['Insert']
+export type DailyLogUpdate = Database['public']['Tables']['daily_logs']['Update']
 
 // Extended types with joins
 export type WorkoutExerciseWithExercise = WorkoutExercise & {
