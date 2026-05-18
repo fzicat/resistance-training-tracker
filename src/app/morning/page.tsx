@@ -29,6 +29,16 @@ function parseNum(s: string): number | null {
     return Number.isFinite(n) ? n : null
 }
 
+function shiftDate(dateStr: string, days: number): string {
+    const [y, m, d] = dateStr.split('-').map(Number)
+    const dt = new Date(y, m - 1, d)
+    dt.setDate(dt.getDate() + days)
+    const year = dt.getFullYear()
+    const month = String(dt.getMonth() + 1).padStart(2, '0')
+    const day = String(dt.getDate()).padStart(2, '0')
+    return `${year}-${month}-${day}`
+}
+
 export default function MorningPage() {
     const [date, setDate] = useState(getTodayDate())
     const [form, setForm] = useState<FormState>(EMPTY_FORM)
@@ -107,16 +117,56 @@ export default function MorningPage() {
 
             <div className="bg-card rounded-xl p-4 border border-border mb-4">
                 <label className="block text-sm font-medium mb-2" htmlFor="date">Date</label>
-                <input
-                    id="date"
-                    type="date"
-                    value={date}
-                    onChange={e => setDate(e.target.value)}
-                    className="w-full bg-background border border-border rounded-lg px-3 py-2 text-base"
-                />
+                <div className="flex items-center gap-2">
+                    <button
+                        type="button"
+                        onClick={() => setDate(shiftDate(date, -1))}
+                        className="p-2 rounded-lg hover:bg-muted transition-colors"
+                        style={{ color: 'var(--orange)' }}
+                        aria-label="Previous day"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="15 18 9 12 15 6" />
+                        </svg>
+                    </button>
+                    <input
+                        id="date"
+                        type="date"
+                        value={date}
+                        onChange={e => setDate(e.target.value)}
+                        className="flex-1 bg-background border border-border rounded-lg px-3 py-2 text-base"
+                    />
+                    <button
+                        type="button"
+                        onClick={() => setDate(shiftDate(date, 1))}
+                        className="p-2 rounded-lg hover:bg-muted transition-colors"
+                        style={{ color: 'var(--orange)' }}
+                        aria-label="Next day"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="9 6 15 12 9 18" />
+                        </svg>
+                    </button>
+                </div>
             </div>
 
             <fieldset disabled={isLoading || isSaving} className="space-y-4">
+                <NumberField
+                    label="Weight"
+                    suffix="lbs"
+                    value={form.weightLbs}
+                    onChange={handleField('weightLbs')}
+                    step="0.1"
+                    min={0}
+                />
+                <NumberField
+                    label="Sleep score"
+                    suffix="/ 100"
+                    value={form.sleepScore}
+                    onChange={handleField('sleepScore')}
+                    min={0}
+                    max={100}
+                />
                 <div className="bg-card rounded-xl p-4 border border-border">
                     <label className="block text-sm font-medium mb-2">Sleep duration</label>
                     <div className="flex gap-2 items-center">
@@ -148,14 +198,6 @@ export default function MorningPage() {
                 </div>
 
                 <NumberField
-                    label="Sleep score"
-                    suffix="/ 100"
-                    value={form.sleepScore}
-                    onChange={handleField('sleepScore')}
-                    min={0}
-                    max={100}
-                />
-                <NumberField
                     label="Sleep HRV (RMSSD)"
                     suffix="ms"
                     value={form.sleepHrvRmssd}
@@ -168,14 +210,6 @@ export default function MorningPage() {
                     suffix="ms"
                     value={form.morningHrvRmssd}
                     onChange={handleField('morningHrvRmssd')}
-                    step="0.1"
-                    min={0}
-                />
-                <NumberField
-                    label="Weight"
-                    suffix="lbs"
-                    value={form.weightLbs}
-                    onChange={handleField('weightLbs')}
                     step="0.1"
                     min={0}
                 />
