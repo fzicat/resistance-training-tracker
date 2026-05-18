@@ -68,6 +68,12 @@ export default function EveningPage() {
     }
 
     const handleSave = async () => {
+        if (date < getTodayDate()) {
+            if (!window.confirm('You are about to change past data. Are you certain?')) {
+                return
+            }
+        }
+
         setIsSaving(true)
         try {
             await upsertDailyLog(date, {
